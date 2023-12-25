@@ -1,7 +1,5 @@
 ![](./docs/logo.png)
 
-# stargazer
-
 **Status (master branch)**
 
 ![](https://img.shields.io/badge/maintained-yes-green) ![](https://img.shields.io/badge/license-MIT-blue) 
@@ -25,6 +23,10 @@ See [installation.md](./docs/installation.md)
 **Configuration guide**
 
 See [configuration.md](./docs/configuration.md)
+
+**User manual**
+
+See [user-manual.md](./docs/user-manual.md)
 
 **Contributions**
 
