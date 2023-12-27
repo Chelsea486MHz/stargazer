@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  compute-1:
+    build: ../compute
+
+  compute-2:
+    build: ../compute
+
+  compute-3:
+    build: ../compute
+
+  auth:
+    build: ../auth
+
+  manager:
+    build: ../manager
+    depends_on:
+      - compute-1
+      - compute-2
+      - compute-3
+      - auth

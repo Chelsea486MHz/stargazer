@@ -28,6 +28,10 @@ See [configuration.md](./docs/configuration.md)
 
 See [user-manual.md](./docs/user-manual.md)
 
+**API reference**
+
+See [user-manual.md](./docs/api-reference.md)
+
 **Contributions**
 
 See [CONTRIBUTING.md](./contributing.md)
@@ -38,4 +42,4 @@ See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 
 **Active contributors**
 
-Chelsea Murgia ([email](mailto:mail@chelsea486mhz.fr))
+Chelsea Murgia <[mail@chelsea486mhz.fr](mailto:mail@chelsea486mhz.fr)>
