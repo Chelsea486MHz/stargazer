@@ -22,7 +22,6 @@ FROM python:3.11
 # App settings
 ENV DEBUG False
 WORKDIR /app
-EXPOSE 5000
 ENV PYTHONUNBUFFERED=1
 
 # Install dependencies from the build image venv

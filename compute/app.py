@@ -23,8 +23,12 @@ class Token(db.Model):
     token = db.Column(db.String(48), unique=True, nullable=False)
 
 
-@app.route('/api/version')
-def generate_step():
+@app.route('/api/common/type')
+def api_common_type():
+    return stargazer.common.version
+
+@app.route('/api/common/version')
+def api_common_version():
     print('Request received')
 
     # Check if the authorization token is included in the request headers
@@ -40,7 +44,7 @@ def generate_step():
         return 'Unauthorized', 401
     print('Request authenticated')
 
-    return version
+    return stargazer.common.version
 
 
 if __name__ == '__main__':

@@ -1,22 +1,25 @@
 version: '3'
 
 services:
-  compute-1:
+  compute:
     build: ../compute
-
-  compute-2:
-    build: ../compute
-
-  compute-3:
-    build: ../compute
+    restart: unless-stopped
+    depends_on:
+      - auth
+      - manager
+    environment:
+      TOKEN: 'Kq5AfYtpYkcGbPnm0z2I_SIRGRem-zKmXA5rnPguUIB7y2DNQTW1KIYouV9IaHH6'
 
   auth:
     build: ../auth
+    restart: unless-stopped
+    environment:
+      USER_TOKEN: 'DrERUGbWdDltQmkii0Mswney_dgDnUKFAwMC-TYB-C2zMnOuQeHgPtsHhBWzgoIg'
 
   manager:
     build: ../manager
+    restart: unless-stopped
     depends_on:
-      - compute-1
-      - compute-2
-      - compute-3
       - auth
+    environment:
+      TOKEN: '3gEy0rWMRqXfJw9aLKzzSuhXggxGTLL4bYsTt-VdmFcmOWQ_ZCwTswvZM6kNVg2r'
