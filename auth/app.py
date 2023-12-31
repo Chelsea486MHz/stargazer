@@ -122,8 +122,8 @@ def api_token_authenticate():
         return '{failure}', 401
 
     token_to_authenticate = request.json.get('token')
+    valid = "true" if authenticate(token_to_authenticate) else "false"
     type = get_token_type(token_to_authenticate)
-    valid = "true" if authenticate(token) else "false"
 
     data = {
         "type": type,
