@@ -79,7 +79,7 @@ The request must be formated as follows, with `type` being either `"user"`, `"ma
 ```
 {
     "type": type,
-    "expiration": expiration
+    "expiration_date": expiration_date
 }
 ```
 
@@ -131,13 +131,15 @@ $ENDPOINT/api/compute/universe/update
 `$STATE` must be formated as an array of Stargazer bodies:
 ```
 {
-    body0,
-    ...,
-    bodyn
+    "body": [
+        body0,
+        ...,
+        bodyn
+    ]
 }
 ```
 
-**compute/universe/constants**
+**compute/configure**
 
 Sets the coupling constants to be used in further computations, as well as the timestep.
 ```
@@ -145,7 +147,7 @@ $ curl \
 -H 'Authorization: $MANAGER_TOKEN \
 -H 'Content-Type: application/json' \
 -d '$CONSTANTS' \
-$ENDPOINT/api/compute/universe/update
+$ENDPOINT/api/compute/configure
 ```
 
 `$CONSTANTS` must be formated as an array:
@@ -287,7 +289,19 @@ Performs numerical integration on the bodies, returning new positions, velocitie
 $ curl \
 -H 'Authorization: $MANAGER_TOKEN \
 -H 'Content-Type: application/json' \
-$ENDPOINT/api/compute/force/electrostatic
+$ENDPOINT/api/compute/integrate
+```
+
+The response data is formated as an array of Stargazer bodies:
+
+```
+{
+    "bodies": [
+        body0,
+        ...
+        bodyn
+    ]
+}
 ```
 
 
@@ -314,3 +328,50 @@ $ curl \
 -H 'Content-Type: application/json' \
 $ENDPOINT/api/manager/unregister
 ```
+
+**manager/configure**
+
+Users can configure the manager nodes for further simulations.
+```
+$ curl \
+-H 'Authorization: $USER_TOKEN \
+-H 'Content-Type: application/json' \
+-d '$CONFIGURATION'
+$ENDPOINT/api/manager/configure
+```
+
+`$CONFIGURATION` must be formatted as such:
+```
+{
+    "constants": {
+        "timestep": timestep,
+        "gravity": gravitational_constant,
+        "electrostatic": electrostatic_constant
+    },
+    "bodies": [
+        body0,
+        ...
+        bodyn
+    ]
+}
+```
+
+**manager/simulate**
+
+Runs a simulation.
+```
+$ curl \
+-H 'Authorization: $USER_TOKEN \
+-H 'Content-Type: application/json' \
+-d '$CONFIGURATION'
+$ENDPOINT/api/manager/simulate
+```
+
+`$CONFIGURATION` must be formatted as such:
+```
+{
+    "duration": duration
+}
+```
+
+The response data is an XYZ file.
