@@ -24,7 +24,7 @@ class Token(db.Model):
     __tablename__ = 'token'
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(48), unique=True, nullable=False)
-    type = db.Column(db.Integer)  # 0 = compute, 1 = manager, 2 = auth
+    type = db.Column(db.Integer)  # 0 = compute, 1 = manager, 2 = user
     creation_date = db.Column(db.DateTime, nullable=False)
     expiration_date = db.Column(db.DateTime, nullable=False)
     revoked = db.Column(db.Boolean, nullable=False)
@@ -56,7 +56,7 @@ def get_token_type(token):
     elif token.type == 1:
         return 'manager'
     elif token.type == 2:
-        return 'auth'
+        return 'user'
     else:
         return 'unknown'
 
@@ -72,7 +72,7 @@ def api_token_create():
         token_type_integer = 0
     elif request.json.get('type') == 'manager':
         token_type_integer = 1
-    elif request.json.get('type') == 'auth':
+    elif request.json.get('type') == 'user':
         token_type_integer = 2
     else:
         return '{failure}', 400
