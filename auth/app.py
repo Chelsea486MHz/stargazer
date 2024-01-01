@@ -65,6 +65,25 @@ def api_common_type():
 
 @app.route('/api/token/create', methods=['POST'])
 def api_token_create():
+
+    # Check for required fields
+    if not request.json:
+        return '{failure}', 400
+    elif not request.json.get('type'):
+        return '{failure}', 400
+    elif not request.json.get('expiration_date'):
+        return '{failure}', 400
+
+    # Check for correct data types
+    if not isinstance(request.json.get('type'), str):
+        return '{failure}', 400
+    elif not isinstance(request.json.get('expiration_date'), str):
+        return '{failure}', 400
+
+    # Check for valid token length
+    if len(request.json.get('token')) != 48:
+        return '{failure}', 400
+
     # Authenticate the request
     if not authenticate(request, 'user'):
         return '{failure}', 401
@@ -98,6 +117,20 @@ def api_token_create():
 
 @app.route('/api/token/revoke', methods=['POST'])
 def api_token_revoke():
+    # Check for required fields
+    if not request.json:
+        return '{failure}', 400
+    elif not request.json.get('token'):
+        return '{failure}', 400
+
+    # Check for correct data types
+    if not isinstance(request.json.get('token'), str):
+        return '{failure}', 400
+
+    # Check for valid token length
+    if len(request.json.get('token')) != 48:
+        return '{failure}', 400
+
     # Authenticate the request
     if not authenticate(request, 'user'):
         return '{failure}', 401
@@ -120,14 +153,35 @@ def api_token_revoke():
 
 @app.route('/api/token/authenticate', methods=['POST'])
 def api_token_authenticate():
+    # Check for required fields
+    if not request.json:
+        return '{failure}', 400
+    elif not request.json.get('token'):
+        return '{failure}', 400
+
+    # Check for correct data types
+    if not isinstance(request.json.get('token'), str):
+        return '{failure}', 400
+
+    # Check for valid token length
+    if len(request.json.get('token')) != 48:
+        return '{failure}', 400
+
     # Authenticate the request
     if not authenticate(request, 'user'):
         return '{failure}', 401
 
     # Extract information from the request
     token_to_authenticate = request.json.get('token')
+
+    # Check for valid token length
+    if len(token_to_authenticate) != 48:
+        return '{failure}', 400
+
+    # Check if the token is valid
     valid = "true" if authenticate(token_to_authenticate) else "false"
 
+    # Look up its type in the database
     hashed_token = hashlib.sha256(token_to_authenticate.encode()).hexdigest()
     token = Token.query.filter_by(token=hashed_token).first()
     if token.type == 0:
