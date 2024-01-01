@@ -43,7 +43,7 @@ def authenticate(request, type='any'):
 
 @app.route('/api/common/version', methods=['POST'])
 def api_common_version():
-    if not authenticate(request, 'any'):
+    if not authenticate(request):
         return 'Unauthorized', 401
     else:
         return response
@@ -51,64 +51,36 @@ def api_common_version():
 
 @app.route('/api/common/type', methods=['POST'])
 def api_common_type():
-    if not authenticate(request, 'any'):
+    if not authenticate(request):
         return 'Unauthorized', 401
     else:
         return response
 
 
-@app.route('/api/compute/update', methods=['POST'])
-def api_compute_update():
-    if not authenticate(request, 'manager'):
+@app.route('/api/manager/register', methods=['POST'])
+def api_manager_register():
+    if not authenticate(request, 'compute'):
         return 'Unauthorized', 401
     return response
 
 
-@app.route('/api/compute/configure', methods=['POST'])
-def api_compute_configure():
-    if not authenticate(request, 'manager'):
+@app.route('/api/manager/unregister', methods=['POST'])
+def api_manager_unregister():
+    if not authenticate(request, 'compute'):
         return 'Unauthorized', 401
     return response
 
 
-@app.route('/api/compute/assign', methods=['POST'])
-def api_compute_assign():
-    if not authenticate(request, 'manager'):
+@app.route('/api/manager/configure', methods=['POST'])
+def api_manager_configure():
+    if not authenticate(request, 'user'):
         return 'Unauthorized', 401
     return response
 
 
-@app.route('/api/compute/potential/gravity', methods=['POST'])
-def api_compute_potential_gravity():
-    if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
-    return response
-
-
-@app.route('/api/compute/potential/electrostatic', methods=['POST'])
-def api_compute_potential_electrostatic():
-    if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
-    return response
-
-
-@app.route('/api/compute/force/gravity', methods=['POST'])
-def api_compute_force_gravity():
-    if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
-    return response
-
-
-@app.route('/api/compute/force/electrostatic', methods=['POST'])
-def api_compute_force_electrostatic():
-    if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
-    return response
-
-
-@app.route('/api/compute/integrate', methods=['POST'])
-def api_compute_integrate():
-    if not authenticate(request, 'manager'):
+@app.route('/api/manager/simulate', methods=['POST'])
+def api_manager_simulate():
+    if not authenticate(request, 'user'):
         return 'Unauthorized', 401
     return response
 

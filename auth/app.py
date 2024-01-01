@@ -30,8 +30,9 @@ class Token(db.Model):
     revoked = db.Column(db.Boolean, nullable=False)
 
 
-# Check if the token is valid
-def authenticate(token):
+# Authenticate the request
+def authenticate(request, type='any'):
+    token = request.headers.get('Authorization')
     hashed_token = hashlib.sha256(token.encode()).hexdigest()
     token = Token.query.filter_by(token=hashed_token).first()
     if not token:
@@ -48,21 +49,27 @@ def authenticate(token):
         return True
 
 
-def get_token_type(token):
-    hashed_token = hashlib.sha256(token.encode()).hexdigest()
-    token = Token.query.filter_by(token=hashed_token).first()
-    if token.type == 0:
-        return 'compute'
-    elif token.type == 1:
-        return 'manager'
-    elif token.type == 2:
-        return 'user'
-    else:
-        return 'unknown'
+@app.route('/api/common/version', methods=['POST'])
+def api_common_version():
+    if not authenticate(request):
+        return '{failure}', 401
+    return response
+
+
+@app.route('/api/common/type', methods=['POST'])
+def api_common_type():
+    if not authenticate(request):
+        return '{failure}', 401
+    return response
 
 
 @app.route('/api/token/create', methods=['POST'])
 def api_token_create():
+    # Authenticate the request
+    if not authenticate(request, 'user'):
+        return '{failure}', 401
+
+    # Extract information from the request
     expiration_date = request.json.get('expiration_date')
     token_to_create = secrets.token.urlsafe(48)
     hashed_token = hashlib.sha256(token_to_create.encode()).hexdigest()
@@ -91,13 +98,18 @@ def api_token_create():
 
 @app.route('/api/token/revoke', methods=['POST'])
 def api_token_revoke():
+    # Authenticate the request
+    if not authenticate(request, 'user'):
+        return '{failure}', 401
+
+    # Extract information from the request
     token_to_revoke = request.json.get('token')
     hashed_token = hashlib.sha256(token_to_revoke.encode()).hexdigest()
 
     # Find the token in the database
     token = Token.query.filter_by(token=hashed_token).first()
     if not token:
-        return '{failure}', 404
+        return '{failure}', 400
 
     # Revoke the token
     token.revoked = True
@@ -108,23 +120,26 @@ def api_token_revoke():
 
 @app.route('/api/token/authenticate', methods=['POST'])
 def api_token_authenticate():
-    # Check if the authorization token is included in the request headers
-    token = request.headers.get('Authorization')
-    if not token:
-        return '{failure}', 401
-    print('Request has authentication token')
-
-    # Validate the hashed authorization token against the database
-    if authenticate(token):
-        print('Request authenticated')
-    else:
-        print('Authentication failed')
+    # Authenticate the request
+    if not authenticate(request, 'user'):
         return '{failure}', 401
 
+    # Extract information from the request
     token_to_authenticate = request.json.get('token')
     valid = "true" if authenticate(token_to_authenticate) else "false"
-    type = get_token_type(token_to_authenticate)
 
+    hashed_token = hashlib.sha256(token_to_authenticate.encode()).hexdigest()
+    token = Token.query.filter_by(token=hashed_token).first()
+    if token.type == 0:
+        type = 'compute'
+    elif token.type == 1:
+        type = 'manager'
+    elif token.type == 2:
+        type = 'user'
+    else:
+        return '{failure}', 400
+
+    # Response
     data = {
         "type": type,
         "valid": valid

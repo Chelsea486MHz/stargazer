@@ -75,7 +75,7 @@ $ curl \
 $ENDPOINT/api/token/create
 ```
 
-The request must be formated as follows, with `type` being either `"user"`, `"manager"`, or `"compute"`, and `expiration` being an integer representing the number of days before token expiration.
+The request must be formated as follows, with `type` being either `"user"`, `"manager"`, or `"compute"`, and `expiration` being a MariaDB DATETIME representing the expiration date.
 ```
 {
     "type": type,
@@ -117,7 +117,7 @@ The response data is formated as follows:
 
 The following API calls can only be answered by Stargazer compute nodes :
 
-**compute/universe/update**
+**compute/update**
 
 Updates the state of the universe on the compute node.
 ```
@@ -125,7 +125,7 @@ $ curl \
 -H 'Authorization: $MANAGER_TOKEN \
 -H 'Content-Type: application/json' \
 -d '$STATE' \
-$ENDPOINT/api/compute/universe/update
+$ENDPOINT/api/compute/update
 ```
 
 `$STATE` must be formated as an array of Stargazer bodies:
