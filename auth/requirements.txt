@@ -2,3 +2,4 @@ gunicorn
 flask
 Flask-SQLAlchemy
 PyMySQL
+jsonify
