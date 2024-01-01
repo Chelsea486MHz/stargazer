@@ -25,7 +25,8 @@ def authenticate(request, type='any'):
         return False
 
     # Request authentication on the server
-    response = requests.post('{}/api/token/authenticate'.format(os.environ.get('AUTH_ENDPOINT')),
+    auth = '{}/api/token/authenticate'.format(os.environ.get('AUTH_ENDPOINT'))
+    response = requests.post(auth,
                              json={'token': token},
                              timeout=5)
 
