@@ -316,7 +316,15 @@ Clients sending the following request register themselves as compute nodes to th
 $ curl \
 -H 'Authorization: $COMPUTE_TOKEN \
 -H 'Content-Type: application/json' \
+-d '$REQUEST' \
 $ENDPOINT/api/manager/register
+```
+
+`$REQUEST` must be formatted as follows, providing the URI on which the compute node is reachable:
+```
+{
+    "compute_endpoint": uri
+}
 ```
 
 **manager/unregister**
