@@ -1,4 +1,4 @@
-![](./docs/logo.png)
+![](./logo.png)
 
 # Stargazer Framework user manual
 
