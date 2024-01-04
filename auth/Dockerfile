@@ -32,5 +32,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY app.py .
 COPY gunicorn_config.py .
 
+# App information
+ENV STARGAZER_VERSION=0.0.1
+ENV STARGAZER_TYPE=auth
+
 # Run the app
 CMD ["gunicorn", "-c", "gunicorn_config.py", "app:app"]

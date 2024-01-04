@@ -52,7 +52,7 @@ def api_common_version():
     with app.app_context():
         if not authenticate(request):
             return jsonify({'error': True}), 401
-    return jsonify({'version': os.environ.get('VERSION')}), 200
+    return jsonify({'version': os.environ.get('STARGAZER_VERSION')}), 200
 
 
 @app.route('/api/common/type', methods=['POST'])
@@ -60,7 +60,7 @@ def api_common_type():
     with app.app_context():
         if not authenticate(request):
             return jsonify({'error': True}), 401
-    return jsonify({'version': os.environ.get('TYPE')}), 200
+    return jsonify({'version': os.environ.get('STARGAZER_TYPE')}), 200
 
 
 @app.route('/api/token/create', methods=['POST'])

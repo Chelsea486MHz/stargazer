@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import requests
 import os
 
@@ -44,18 +44,18 @@ def authenticate(request, type='any'):
 
 @app.route('/api/common/version', methods=['POST'])
 def api_common_version():
-    if not authenticate(request):
-        return 'Unauthorized', 401
-    else:
-        return response
+    with app.app_context():
+        if not authenticate(request):
+            return jsonify({'error': True}), 401
+    return jsonify({'version': os.environ.get('STARGAZER_VERSION')}), 200
 
 
 @app.route('/api/common/type', methods=['POST'])
 def api_common_type():
-    if not authenticate(request):
-        return 'Unauthorized', 401
-    else:
-        return response
+    with app.app_context():
+        if not authenticate(request):
+            return jsonify({'error': True}), 401
+    return jsonify({'version': os.environ.get('STARGAZER_TYPE')}), 200
 
 
 @app.route('/api/manager/register', methods=['POST'])
