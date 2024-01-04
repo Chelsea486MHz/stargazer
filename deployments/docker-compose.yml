@@ -8,15 +8,16 @@ services:
       - auth
       - manager
     environment:
-      AUTH_ENDPOINT: 'http://auth:5000'
-      MANAGER_ENDPOINT: 'http://manager:5000'
-      TOKEN: 'Kq5AfYtpYkcGbPnm0z2I_SIRGRem-zKmXA5rnPguUIB7y2DNQTW1KIYouV9IaHH6'
+      ENDPOINT: 'http://compute:5000' # How this node can be reached
+      AUTH_ENDPOINT: 'http://auth:5000' # Where to reach the Stargazer authentication gateway
+      MANAGER_ENDPOINT: 'http://manager:5000' # Where to reach the Stargazer manager
+      TOKEN: 'Kq5AfYtpYkcGbPnm0z2I_SIRGRem-zKmXA5rnPguUIB7y2DNQTW1KIYouV9IaHH6' # Compute token unique to this node used to authenticate with the manager
 
   auth:
     image: chelsea486mhz/stargazer-auth
     restart: unless-stopped
     environment:
-      USER_TOKEN: 'DrERUGbWdDltQmkii0Mswney_dgDnUKFAwMC-TYB-C2zMnOuQeHgPtsHhBWzgoIg'
+      USER_TOKEN: 'DrERUGbWdDltQmkii0Mswney_dgDnUKFAwMC-TYB-C2zMnOuQeHgPtsHhBWzgoIg' # User token
 
   manager:
     image: chelsea486mhz/stargazer-manager
@@ -24,5 +25,5 @@ services:
     depends_on:
       - auth
     environment:
-      AUTH_ENDPOINT: 'http://auth:5000'
-      TOKEN: '3gEy0rWMRqXfJw9aLKzzSuhXggxGTLL4bYsTt-VdmFcmOWQ_ZCwTswvZM6kNVg2r'
+      AUTH_ENDPOINT: 'http://auth:5000' # Where to reach the Stargazer authentication gateway
+      TOKEN: '3gEy0rWMRqXfJw9aLKzzSuhXggxGTLL4bYsTt-VdmFcmOWQ_ZCwTswvZM6kNVg2r' # Manager token unique to this node

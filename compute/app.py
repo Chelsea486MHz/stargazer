@@ -5,6 +5,19 @@ import os
 # Initialize Flask
 app = Flask(__name__)
 
+# Register to the manager node
+manager = os.environ.get('MANAGER_ENDPOINT')
+print('Attempting registration with manager node at {}...'.format(manager))
+response = requests.post('{}/api/manager/register'.format(manager),
+                         headers={'Authorization': os.environ.get('TOKEN')},
+                         json={'compute_endpoint': os.environ.get('ENDPOINT')},
+                         timeout=5)
+if not response.json().get('success'):
+    print('FATAL: Failed to register with the manager node.')
+    exit(1)
+else:
+    print('Registered.')
+
 
 def authenticate(request, type='any'):
     # Convert type to integer
@@ -61,56 +74,56 @@ def api_common_type():
 def api_compute_update():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/configure', methods=['POST'])
 def api_compute_configure():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/assign', methods=['POST'])
 def api_compute_assign():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/potential/gravity', methods=['POST'])
 def api_compute_potential_gravity():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/potential/electrostatic', methods=['POST'])
 def api_compute_potential_electrostatic():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/force/gravity', methods=['POST'])
 def api_compute_force_gravity():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/force/electrostatic', methods=['POST'])
 def api_compute_force_electrostatic():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/integrate', methods=['POST'])
 def api_compute_integrate():
     if not authenticate(request, 'manager'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 if __name__ == '__main__':

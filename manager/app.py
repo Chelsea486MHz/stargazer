@@ -62,28 +62,28 @@ def api_common_type():
 def api_manager_register():
     if not authenticate(request, 'compute'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/manager/unregister', methods=['POST'])
 def api_manager_unregister():
     if not authenticate(request, 'compute'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/manager/configure', methods=['POST'])
 def api_manager_configure():
     if not authenticate(request, 'user'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 @app.route('/api/manager/simulate', methods=['POST'])
 def api_manager_simulate():
     if not authenticate(request, 'user'):
         return 'Unauthorized', 401
-    return response
+    return jsonify({'success': True}), 200
 
 
 if __name__ == '__main__':
