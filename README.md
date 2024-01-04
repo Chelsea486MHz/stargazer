@@ -2,9 +2,7 @@
 
 **Status (master branch)**
 
-![](https://img.shields.io/badge/maintained-yes-green) ![](https://img.shields.io/badge/license-MIT-blue) ![](https://img.shields.io/github/actions/workflow/status/Chelsea486MHz/stargazer/manager?label=build%20(auth)
-) ![](https://img.shields.io/github/actions/workflow/status/Chelsea486MHz/stargazer/manager?label=build%20(manager)) ![](https://img.shields.io/github/actions/workflow/status/Chelsea486MHz/stargazer/compute?label=build%20(compute)
-)
+![](https://img.shields.io/badge/maintained-yes-green) ![](https://img.shields.io/badge/license-MIT-blue) ![](https://img.shields.io/github/actions/workflow/status/Chelsea486MHz/stargazer/auth.yml?label=build%20(auth)) ![](https://img.shields.io/github/actions/workflow/status/Chelsea486MHz/stargazer/manager.yml?label=build%20(manager)) ![](https://img.shields.io/github/actions/workflow/status/Chelsea486MHz/stargazer/compute.yml?label=build%20(compute))
 
 ---
 
