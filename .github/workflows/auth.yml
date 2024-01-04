@@ -23,6 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -r auth/requirements.txt
         pip install flake8
 
     - name: Lint with flake8
@@ -43,6 +44,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -r auth/requirements.txt
         pip install bandit
 
     - name: Run bandit
@@ -50,6 +52,7 @@ jobs:
         bandit -r auth/*.py || true
 
   publish:
+    needs: [flake8, bandit]
     runs-on: ubuntu-latest
     steps:
     - name: Check out source repository

@@ -1,9 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 import hashlib
 import secrets
-import json
 import os
 
 # Initialize Flask
