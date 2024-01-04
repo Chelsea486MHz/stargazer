@@ -2,11 +2,11 @@ name: auth
 
 on:
   push:
-    paths:
-    - 'auth/**.py'
+    branches:
+    - 'main'
   pull_request:
-    paths:
-    - 'auth/**.py'
+    branches:
+    - 'main'
 
 jobs:
   flake8:
