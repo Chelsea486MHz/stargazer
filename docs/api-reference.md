@@ -14,7 +14,7 @@ All Stargazer API calls require token authentication. To known which token type 
 
 `$MANAGER_TOKEN`: manager tokens.
 
-When response data is not documented, it means the call returns either `"success"` or `"failure"` depending on what happened.
+When response data is not documented, it means the call returns either `{success: False}` or `{success: True}` depending on what happened.
 
 ## Authentication
 

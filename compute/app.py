@@ -5,6 +5,30 @@ import os
 # Initialize Flask
 app = Flask(__name__)
 
+# Simulation settings
+timestep = 1e-12
+gravity = 6.67408e-11
+electrostatic = 8.9875517873681764e9  # 1 / (4 * pi * epsilon_0)
+
+# Range of bodies to perform computations on
+range_start = 0
+range_end = 0
+
+# List of bodies in the simulation
+bodies = []
+
+
+# Object describing a Stargazer body
+class Body:
+    def __init__(self, position, velocity, acceleration, force, mass, electrostatic_charge):
+        self.position = position
+        self.velocity = velocity
+        self.acceleration = acceleration
+        self.force = force
+        self.mass = mass
+        self.electrostatic_charge = electrostatic_charge
+
+
 # Register to the manager node
 manager = os.environ.get('MANAGER_ENDPOINT')
 print('Attempting registration with manager node at {}...'.format(manager))
@@ -58,7 +82,7 @@ def authenticate(request, type='any'):
 def api_common_version():
     with app.app_context():
         if not authenticate(request):
-            return jsonify({'error': True}), 401
+            return jsonify({'success': False}), 401
     return jsonify({'version': os.environ.get('STARGAZER_VERSION')}), 200
 
 
@@ -66,63 +90,138 @@ def api_common_version():
 def api_common_type():
     with app.app_context():
         if not authenticate(request):
-            return jsonify({'error': True}), 401
+            return jsonify({'success': False}), 401
     return jsonify({'version': os.environ.get('STARGAZER_TYPE')}), 200
 
 
 @app.route('/api/compute/update', methods=['POST'])
 def api_compute_update():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
+
+    # Check if the bodies are provided
+    if not isinstance(request.json.get('bodies'), list):
+        return jsonify({'success': False}), 400
+
+    # Retrieve all bodies from the request
+    bodies = []
+    for body in request.json.get('bodies'):
+        position = body.get('position')
+        velocity = body.get('velocity')
+        acceleration = body.get('acceleration')
+        force = body.get('force')
+        mass = body.get('value').get('mass')
+        electrostatic_charge = body.get('value').get('electrostatic_charge')
+
+        # Check if the required data is provided
+        if not position or not velocity or not acceleration or not force or not mass or not electrostatic_charge:
+            return jsonify({'success': False}), 400
+
+        # Check if the data types are valid
+        if not isinstance(position, dict) or not isinstance(velocity, dict) or not isinstance(acceleration, dict) or not isinstance(force, dict) or not isinstance(mass, float) or not isinstance(electrostatic_charge, float):
+            return jsonify({'success': False}), 400
+
+        # Check if the vectors valid
+        if not isinstance(position.get('x'), float) or not isinstance(position.get('y'), float) or not isinstance(position.get('z'), float):
+            return jsonify({'success': False}), 400
+        if not isinstance(velocity.get('x'), float) or not isinstance(velocity.get('y'), float) or not isinstance(velocity.get('z'), float):
+            return jsonify({'success': False}), 400
+        if not isinstance(acceleration.get('x'), float) or not isinstance(acceleration.get('y'), float) or not isinstance(acceleration.get('z'), float):
+            return jsonify({'success': False}), 400
+        if not isinstance(force.get('x'), float) or not isinstance(force.get('y'), float) or not isinstance(force.get('z'), float):
+            return jsonify({'success': False}), 400
+
+        # Create vectors from the retrieved variables
+        position = [position.get('x'), position.get('y'), position.get('z')]
+        velocity = [velocity.get('x'), velocity.get('y'), velocity.get('z')]
+        acceleration = [acceleration.get('x'), acceleration.get('y'), acceleration.get('z')]
+        force = [force.get('x'), force.get('y'), force.get('z')]
+
+        # Create the body
+        bodies.append(Body(position, velocity, acceleration, force, mass, electrostatic_charge))
+
     return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/configure', methods=['POST'])
 def api_compute_configure():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
+
+    # Retrieve the variables from the request
+    timestep = request.json.get('constants').get('timestep')
+    gravity = request.json.get('constants').get('gravity')
+    electrostatic = request.json.get('constants').get('electrostatic')
+
+    # Check if the variables are provided
+    if not timestep or not gravity or not electrostatic:
+        return jsonify({'success': False}), 400
+
+    # Check if the variables are valid
+    if not isinstance(timestep, float) or not isinstance(gravity, float) or not isinstance(electrostatic, float):
+        return jsonify({'success': False}), 400
+    if timestep <= 0:
+        return jsonify({'success': False}), 400
+
     return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/assign', methods=['POST'])
 def api_compute_assign():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
+
+    # Retrieve the range from the request
+    range_start = request.json.get('range').get('start')
+    range_end = request.json.get('range').get('end')
+
+    # Check if the range is provided
+    if not range_start or not range_end:
+        return jsonify({'success': False}), 400
+
+    # Check if the range is valid
+    if not isinstance(range_start, int) or not isinstance(range_end, int):
+        return jsonify({'success': False}), 400
+    if range_start < 0 or range_end < 0:
+        return jsonify({'success': False}), 400
+    if range_start > range_end:
+        return jsonify({'success': False}), 400
+
     return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/potential/gravity', methods=['POST'])
 def api_compute_potential_gravity():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
     return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/potential/electrostatic', methods=['POST'])
 def api_compute_potential_electrostatic():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
     return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/force/gravity', methods=['POST'])
 def api_compute_force_gravity():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
     return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/force/electrostatic', methods=['POST'])
 def api_compute_force_electrostatic():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
     return jsonify({'success': True}), 200
 
 
 @app.route('/api/compute/integrate', methods=['POST'])
 def api_compute_integrate():
     if not authenticate(request, 'manager'):
-        return 'Unauthorized', 401
+        return jsonify({'success': False}), 401
     return jsonify({'success': True}), 200
 
 
