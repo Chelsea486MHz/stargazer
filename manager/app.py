@@ -220,7 +220,43 @@ def api_manager_simulate():
     if duration <= 0:
         return jsonify({'success': False}), 400
 
+    # Log the number of bodies
+    print('{} bodies to simulate'.format(len(bodies)))
+
     # Simulate the universe
+    for i in range(int(duration / timestep)):
+        # Log the current iteration
+        print('Iteration {}/{}'.format(i, int(duration / timestep)))
+
+        # Log the number of compute nodes
+        print('{} compute nodes available'.format(len(registered)))
+
+        # Configure the compute nodes
+        for node in registered:
+            requests.post('{}/api/compute/configure'.format(node[1]),
+                          json={'constants': {'timestep': timestep,
+                                              'gravity': gravity,
+                                              'electrostatic': electrostatic},
+                                'bodies': bodies},
+                          timeout=5)
+            print('Configured compute node {}'.format(node[1]))
+
+        # Send the updated bodies to the compute nodes
+        for node in registered:
+            requests.post('{}/api/compute/bodies'.format(node[1]),
+                          json={'body': bodies},
+                          timeout=5)
+            print('Refreshed bodies on compute node {}'.format(node[1]))
+
+        # Assign a range of bodies to each registered compute node
+        for node in registered:
+            start = int(len(bodies) / len(registered) * registered.index(node))
+            end = int(len(bodies) / len(registered) * (registered.index(node) + 1))
+            requests.post('{}/api/compute/assign'.format(node[1]),
+                          json={'start': start,
+                                'end': end},
+                          timeout=5)
+            print('Assigned bodies {}-{} to compute node {}'.format(start, end, node[1]))
 
     return jsonify({'success': True}), 200
 
